@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匯款狀態查詢系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input::placeholder {
+            color: #aaa;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .result h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .discord-button {
+            display: inline-block;
+            background: #5865F2;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .discord-button:hover {
+            background: #4752C4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(88, 101, 242, 0.3);
+        }
+
+        .icon {
+            font-size: 24px;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            margin-top: 15px;
+        }
+
+        .back-button:hover {
+            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💳 匯款狀態查詢</h1>
+        <p class="subtitle">請輸入您的資料以查詢匯款狀態</p>
+
+        <form id="queryForm">
+            <div class="form-group">
+                <label for="email">電子郵件</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="example@email.com"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="lastFiveDigits">匯款帳號後五碼</label>
+                <input 
+                    type="text" 
+                    id="lastFiveDigits" 
+                    name="lastFiveDigits" 
+                    placeholder="12345"
+                    maxlength="5"
+                    pattern="\d{5}"
+                    required
+                >
+            </div>
+
+            <button type="submit" id="submitBtn">查詢匯款狀態</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #666;">查詢中,請稍候...</p>
+        </div>
+
+        <div class="result" id="result">
+            <!-- 結果會動態插入這裡 -->
+        </div>
+    </div>
+
+    <script>
+        // ===== 請在這裡填入你的 Google Apps Script Web App URL =====
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzoyZR8gc5SBpyNOsZJrFd9y-AbAe2E9sfR2CCymCJMYl2UAgUwDTg-c2EXgdVBf0KGjQ/exec';
+        // ===========================================================
+
+        const form = document.getElementById('queryForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const emailInput = document.getElementById('email');
+        const lastFiveDigitsInput = document.getElementById('lastFiveDigits');
+
+        // 限制後五碼只能輸入數字
+        lastFiveDigitsInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^\d]/g, '').slice(0, 5);
+        });
+
+        // 表單提交處理
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // 檢查 API URL 是否已設定
+            if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
+                showResult(false, '系統尚未設定完成,請聯繫管理員');
+                return;
+            }
+
+            const email = emailInput.value.trim();
+            const lastFiveDigits = lastFiveDigitsInput.value.trim();
+
+            // 驗證
+            if (!email || !lastFiveDigits) {
+                showResult(false, '請填寫所有欄位');
+                return;
+            }
+
+            if (lastFiveDigits.length !== 5) {
+                showResult(false, '後五碼必須是5位數字');
+                return;
+            }
+
+            // 開始查詢
+            showLoading(true);
+            hideResult();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        lastFiveDigits: lastFiveDigits
+                    })
+                });
+
+                const data = await response.json();
+                showLoading(false);
+
+                if (data.success) {
+                    showSuccessResult(data);
+                } else {
+                    showResult(false, data.message);
+                }
+
+            } catch (error) {
+                showLoading(false);
+                console.error('查詢錯誤:', error);
+                showResult(false, '系統錯誤,請稍後再試或聯繫管理員');
+            }
+        });
+
+        function showLoading(show) {
+            if (show) {
+                loading.classList.add('active');
+                submitBtn.disabled = true;
+            } else {
+                loading.classList.remove('active');
+                submitBtn.disabled = false;
+            }
+        }
+
+        function hideResult() {
+            result.classList.remove('active');
+        }
+
+        function showResult(success, message) {
+            result.className = 'result active ' + (success ? 'success' : 'error');
+            result.innerHTML = `
+                <h2>
+                    <span class="icon">${success ? '✅' : '❌'}</span>
+                    ${success ? '查詢成功' : '查詢失敗'}
+                </h2>
+                <p>${message}</p>
+                <button class="back-button" onclick="resetForm()">返回查詢</button>
+            `;
+        }
+
+        function showSuccessResult(data) {
+            result.className = 'result active success';
+            result.innerHTML = `
+                <h2>
+                    <span class="icon">🎉</span>
+                    匯款確認成功
+                </h2>
+                <p><strong>已收到您的匯款,歡迎加入我們!</strong></p>
+                <p>您的 Email 已登記完成。</p>
+                ${data.data.discordLink ? `
+                    <a href="${data.data.discordLink}" target="_blank" class="discord-button">
+                        🎮 加入 Discord 伺服器
+                    </a>
+                ` : ''}
+                <button class="back-button" onclick="resetForm()">返回查詢</button>
+            `;
+        }
+
+        function resetForm() {
+            form.reset();
+            hideResult();
+            emailInput.focus();
+        }
+
+        // 頁面載入時自動聚焦到 email 欄位
+        window.addEventListener('load', function() {
+            emailInput.focus();
+        });
+    </script>
+</body>
+</html>
