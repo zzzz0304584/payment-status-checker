@@ -344,7 +344,7 @@
 
         // 檢查 API 連線狀態
         async function checkAPIStatus() {
-            if (API_URL === 'https://script.google.com/macros/s/AKfycbzoyZR8gc5SBpyNOsZJrFd9y-AbAe2E9sfR2CCymCJMYl2UAgUwDTg-c2EXgdVBf0KGjQ/exec') {
+            if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
                 statusText.innerHTML = '<span class="status-error">⚠️ API 未設定</span>';
                 return;
             }
@@ -380,7 +380,7 @@
             e.preventDefault();
 
             // 檢查 API URL 是否已設定
-            if (API_URL === 'https://script.google.com/macros/s/AKfycbzoyZR8gc5SBpyNOsZJrFd9y-AbAe2E9sfR2CCymCJMYl2UAgUwDTg-c2EXgdVBf0KGjQ/exec') {
+            if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
                 showResult(false, '系統尚未設定完成,請聯繫管理員', null, {
                     error: 'API_URL 未設定',
                     solution: '請在 HTML 檔案中填入 Google Apps Script 的 Web App URL'
