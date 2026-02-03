@@ -528,8 +528,8 @@
             if (debugInfo && debugInfo.length > 0) {
                 debugHtml += `
                     <details style="margin-top: 15px;">
-                        <summary>🔍 查看後端除錯資訊</summary>
-                        <pre>${debugInfo.join('\n')}</pre>
+                        //<summary>🔍 查看後端除錯資訊</summary>
+                        //<pre>${debugInfo.join('\n')}</pre>
                     </details>
                 `;
             }
@@ -538,7 +538,7 @@
             if (errorInfo) {
                 debugHtml += `
                     <details style="margin-top: 15px;">
-                        <summary>⚠️ 錯誤詳細資訊</summary>
+                        //<summary>⚠️ 錯誤詳細資訊</summary>
                        // ${errorInfo.suggestion ? `<p style="margin: 10px 0; white-space: pre-line;"><strong>${errorInfo.suggestion}</strong></p>` : ''}
                         //<pre>${JSON.stringify(errorInfo.details || errorInfo, null, 2)}</pre>
                     </details>
