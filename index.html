@@ -463,13 +463,22 @@
                     errorDetails.parseError = parseError.toString();
                     throw new Error('無法解析伺服器回應 (不是有效的 JSON 格式)');
                 }
-
+                const data = await response.json();
                 showLoading(false);
 
                 if (data.success) {
-                    showSuccessResult(data);
+                // 修改成功顯示內容
+                result.className = 'result active success';
+                result.innerHTML = `
+                    <h2><span class="icon">🎉</span> 報名確認成功</h2>
+                    <p style="font-size: 1.2rem; margin: 15px 0;">
+                        <strong>${data.nickname} 您好，恭喜您成功報名 ${data.courseName}！</strong>
+                    </p>
+                    <button class="back-button" onclick="resetForm()">返回</button>
+                `;
                 } else {
-                    showResult(false, data.message, data.debug);
+                    // 這裡會顯示「帳號錯誤」或「密碼錯誤」
+                    showResult(false, data.message); 
                 }
 
             } catch (error) {
