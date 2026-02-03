@@ -337,7 +337,7 @@
                 if (data.success) {
                     showSuccessResult(data);
                 } else {
-                    showResult(false, data.message);
+                    showResult(false, data.message, data.debug);
                 }
 
             } catch (error) {
@@ -361,14 +361,26 @@
             result.classList.remove('active');
         }
 
-        function showResult(success, message) {
+        function showResult(success, message, debugInfo = null) {
             result.className = 'result active ' + (success ? 'success' : 'error');
+            
+            let debugHtml = '';
+            if (debugInfo && debugInfo.length > 0) {
+                debugHtml = `
+                    <details style="margin-top: 15px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 5px;">
+                        <summary style="cursor: pointer; font-weight: 600; margin-bottom: 10px;">🔍 查看詳細除錯資訊</summary>
+                        <pre style="background: white; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 12px; line-height: 1.4;">${debugInfo.join('\n')}</pre>
+                    </details>
+                `;
+            }
+            
             result.innerHTML = `
                 <h2>
                     <span class="icon">${success ? '✅' : '❌'}</span>
                     ${success ? '查詢成功' : '查詢失敗'}
                 </h2>
                 <p>${message}</p>
+                ${debugHtml}
                 <button class="back-button" onclick="resetForm()">返回查詢</button>
             `;
         }
