@@ -520,11 +520,7 @@
         }
 
         function showResult(success, message, debugInfo = null, errorInfo = null) {
-            result.className = 'result active ' + (success ? 'success' : 'error');
-            
-            let debugHtml = '';
-             
-            result.innerHTML = `
+
                 <h2>
                     <span class="icon">${success ? '✅' : '❌'}</span>
                     ${success ? '查詢成功' : '查詢失敗'}
