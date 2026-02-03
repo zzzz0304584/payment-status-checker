@@ -443,7 +443,7 @@
 
                 // 檢查 HTTP 狀態
                 if (!response.ok) {
-                    throw new Error(`HTTP 錯誤! 狀態碼: ${response.status} ${response.statusText}`);
+                    //throw new Error(`HTTP 錯誤! 狀態碼: ${response.status} ${response.statusText}`);
                 }
 
                 const contentType = response.headers.get('content-type');
@@ -486,16 +486,16 @@
 
                 if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
                     errorMessage = '網路連線錯誤';
-                    suggestion = '可能原因:\n1. Apps Script URL 錯誤\n2. Apps Script 未正確部署\n3. 網路連線問題';
+                    //suggestion = '可能原因:\n1. Apps Script URL 錯誤\n2. Apps Script 未正確部署\n3. 網路連線問題';
                 } else if (error.message.includes('CORS')) {
                     errorMessage = 'CORS 錯誤';
-                    suggestion = '可能原因:\n1. Apps Script 的「存取權」設定錯誤\n2. 需要設定為「所有人」';
+                    //suggestion = '可能原因:\n1. Apps Script 的「存取權」設定錯誤\n2. 需要設定為「所有人」';
                 } else if (error.message.includes('JSON')) {
                     errorMessage = 'API 回應格式錯誤';
-                    suggestion = '可能原因:\n1. Apps Script 程式碼有誤\n2. 回傳的不是 JSON 格式';
+                    //suggestion = '可能原因:\n1. Apps Script 程式碼有誤\n2. 回傳的不是 JSON 格式';
                 } else if (error.message.includes('HTTP')) {
                     errorMessage = `HTTP ${errorDetails.responseStatus} 錯誤`;
-                    suggestion = `伺服器回應: ${errorDetails.responseStatusText}`;
+                    //suggestion = `伺服器回應: ${errorDetails.responseStatusText}`;
                 }
 
                 showResult(false, errorMessage, null, {
@@ -539,8 +539,8 @@
                 debugHtml += `
                     <details style="margin-top: 15px;">
                         <summary>⚠️ 錯誤詳細資訊</summary>
-                        ${errorInfo.suggestion ? `<p style="margin: 10px 0; white-space: pre-line;"><strong>${errorInfo.suggestion}</strong></p>` : ''}
-                        <pre>${JSON.stringify(errorInfo.details || errorInfo, null, 2)}</pre>
+                       // ${errorInfo.suggestion ? `<p style="margin: 10px 0; white-space: pre-line;"><strong>${errorInfo.suggestion}</strong></p>` : ''}
+                        //<pre>${JSON.stringify(errorInfo.details || errorInfo, null, 2)}</pre>
                     </details>
                 `;
             }
