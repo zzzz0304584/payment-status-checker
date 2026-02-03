@@ -523,28 +523,7 @@
             result.className = 'result active ' + (success ? 'success' : 'error');
             
             let debugHtml = '';
-            
-            // 顯示除錯資訊 (來自後端)
-            if (debugInfo && debugInfo.length > 0) {
-                debugHtml += `
-                    <details style="margin-top: 15px;">
-                        //<summary>🔍 查看後端除錯資訊</summary>
-                        //<pre>${debugInfo.join('\n')}</pre>
-                    </details>
-                `;
-            }
-            
-            // 顯示錯誤詳情 (來自前端)
-            if (errorInfo) {
-                debugHtml += `
-                    <details style="margin-top: 15px;">
-                        //<summary>⚠️ 錯誤詳細資訊</summary>
-                       // ${errorInfo.suggestion ? `<p style="margin: 10px 0; white-space: pre-line;"><strong>${errorInfo.suggestion}</strong></p>` : ''}
-                        //<pre>${JSON.stringify(errorInfo.details || errorInfo, null, 2)}</pre>
-                    </details>
-                `;
-            }
-            
+             
             result.innerHTML = `
                 <h2>
                     <span class="icon">${success ? '✅' : '❌'}</span>
